@@ -61,11 +61,6 @@
             android:entries="@array/text_colors_labels"
             android:entryValues="@array/text_colors_values"
             android:defaultValue="#FFFFFF/#000000" />
-        <Preference
-            android:key="lterm_source"
-            android:title="LTerminal Source"
-            android:summary="By LineageOS Team, and port by YukoSky. Check GitHub"
-            android:icon="@mipmap/ic_yukosky" />
     </PreferenceCategory>
     <!-- Keyboard category -->
     <!-- Shell category -->
