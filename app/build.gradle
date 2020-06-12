@@ -28,7 +28,7 @@ android {
     }
 }
 
-def getDateTimeBuild() {
+static def getDateTimeBuild() {
     DateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
     return df.format(new Date());
 }
