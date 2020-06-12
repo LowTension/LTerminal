@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.terminal">
-	
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.software.leanback"
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.software.leanback"
         android:required="false" />
 
-    <uses-feature android:name="android.hardware.touchscreen"
+    <uses-feature
+        android:name="android.hardware.touchscreen"
         android:required="false" />
 
-    <uses-feature android:name="android.hardware.screen.portrait"
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
         android:required="false" />
 
     <application
-		android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_label"
+        android:allowBackup="true"
         android:appCategory="productivity"
-        android:enabled="true">
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_label">
         <activity
             android:name="com.android.terminal.TerminalActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
-            android:theme="@style/TermTheme.NoActionBar">
+            android:theme="@style/TermTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -32,16 +34,16 @@
 
         <activity
             android:name="com.android.terminal.TerminalSettingsActivity"
+            android:excludeFromRecents="true"
             android:label="@string/menu_item_settings"
-            android:theme="@android:style/Theme.Material"
-            android:excludeFromRecents="true">
+            android:theme="@android:style/Theme.Material">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-		
+
         <service android:name="com.android.terminal.TerminalService" />
-			
+
     </application>
 
 </manifest>
