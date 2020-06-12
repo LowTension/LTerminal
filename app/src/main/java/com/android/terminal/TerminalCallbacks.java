@@ -1,7 +1,5 @@
 package com.android.terminal;
 
-import androidx.annotation.Keep;
-
 /*
  * Copyright (C) 2013 The Android Open Source Project
  *
@@ -18,7 +16,6 @@ import androidx.annotation.Keep;
  * limitations under the License.
  */
  
-@Keep
 public abstract class TerminalCallbacks
 {
     public int damage(int startRow, int endRow, int startCol, int endCol)

@@ -17,13 +17,11 @@ package com.android.terminal;
  */
 
 import android.graphics.Color;
-import androidx.annotation.Keep;
 
 /**
  * Single terminal session backed by a pseudo terminal on the local device.
  */
  
-@Keep
 public class Terminal
 {
     public static final String TAG = "Terminal";
@@ -40,8 +38,6 @@ public class Terminal
      * Represents a run of one or more {@code VTermScreenCell} which all have
      * the same formatting.
      */
-	 
-	@Keep
     public static class CellRun
 	{
         char[] data;

@@ -21,14 +21,12 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.SparseArray;
-import androidx.annotation.Keep;
 
 /**
  * Background service that keeps {@link Terminal} instances running and warm
  * when UI isn't present.
  */
  
-@Keep
 public class TerminalService extends Service
 {
     private final SparseArray<Terminal> mTerminals = new SparseArray<Terminal>();
