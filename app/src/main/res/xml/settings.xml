@@ -19,6 +19,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/menu_item_settings">
     <SwitchPreference
+        android:icon="@drawable/ic_volume_up"
         android:key="volumekey_mode"
         android:title="@string/volumekey_title"
         android:summary="@string/volumekey_summary"
@@ -26,10 +27,12 @@
     <PreferenceCategory
         android:title="@string/screen_settings">
         <SwitchPreference
+            android:icon="@drawable/ic_fullscreen"
             android:key="fullscreen_mode"
             android:title="@string/fullscreen_mode_title"
             android:defaultValue="false" />
         <ListPreference
+            android:icon="@drawable/ic_screen_rotation"
             android:key="screen_orientation"
             android:title="@string/screen_orientation_title"
             android:summary="%s"
@@ -41,6 +44,7 @@
     <PreferenceCategory
         android:title="@string/text_settings">
         <ListPreference
+            android:icon="@drawable/ic_round_text_fields_24"
             android:key="font_size"
             android:title="@string/font_size_title"
             android:summary="%s"
@@ -49,6 +53,7 @@
             android:entryValues="@array/font_size_values"
             android:defaultValue="12" />
         <ListPreference
+            android:icon="@drawable/ic_edit_size"
             android:key="text_colors"
             android:title="@string/text_colors_title"
             android:summary="%s"
@@ -56,6 +61,11 @@
             android:entries="@array/text_colors_labels"
             android:entryValues="@array/text_colors_values"
             android:defaultValue="#FFFFFF/#000000" />
+        <Preference
+            android:key="lterm_source"
+            android:title="LTerminal Source"
+            android:summary="By LineageOS Team, and port by YukoSky. Check GitHub"
+            android:icon="@mipmap/ic_yukosky" />
     </PreferenceCategory>
     <!-- Keyboard category -->
     <!-- Shell category -->

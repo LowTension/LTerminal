@@ -41,8 +41,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.PagerTitleStrip;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.terminal.R;
-
 import static com.android.terminal.Terminal.TAG;
 
 /**
@@ -195,18 +193,18 @@ public class TerminalActivity extends Activity {
 
         setContentView(R.layout.activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mTitles = (PagerTitleStrip) findViewById(R.id.titles);
+        mPager = findViewById(R.id.pager);
+        mTitles = findViewById(R.id.titles);
 
         mPager.setAdapter(mTermAdapter);
 
         View decorView = getWindow().getDecorView();
         decorView.setOnSystemUiVisibilityChangeListener(mUiVisibilityChangeListener);
 
-        ViewGroup root = (ViewGroup) findViewById(R.id.root);
+        ViewGroup root = findViewById(R.id.root);
         root.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
 
         final int REQUEST_WRITE_STORAGE = 51;

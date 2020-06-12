@@ -33,7 +33,7 @@
         <activity
             android:name="com.android.terminal.TerminalSettingsActivity"
             android:label="@string/menu_item_settings"
-            android:theme="@style/TermTheme"
+            android:theme="@android:style/Theme.Material"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -18,11 +18,10 @@ package com.android.terminal;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
 import android.view.MenuItem;
-
-import com.android.terminal.R;
 
 /**
  * Settings for Terminal.
@@ -34,11 +33,13 @@ public class TerminalSettingsActivity extends PreferenceActivity {
     public static final String KEY_FONT_SIZE = "font_size";
     public static final String KEY_TEXT_COLORS = "text_colors";
     public static final String KEY_VOLUME_MODE = "volumekey_mode";
+    public static final String KEY_APP_SOURCE = "lterm_source";
 
     private SwitchPreference mFullscreenModePref;
     private ListPreference mScreenOrientationPref;
     private ListPreference mFontSizePref;
     private ListPreference mTextColorsPref;
+    private Preference mAppSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class TerminalSettingsActivity extends PreferenceActivity {
         mScreenOrientationPref = (ListPreference) findPreference(KEY_SCREEN_ORIENTATION);
         mFontSizePref = (ListPreference) findPreference(KEY_FONT_SIZE);
         mTextColorsPref = (ListPreference) findPreference(KEY_TEXT_COLORS);
+        mAppSource = findPreference(KEY_APP_SOURCE);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }

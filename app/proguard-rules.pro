@@ -17,36 +17,13 @@
 #}
 -keepattributes SourceFile, LineNumberTable
 
--dontwarn androidx.**
-
--keep class androidx.annotation.Keep
-
--keep @androidx.annotation.Keep class * {*;}
-
--keepclasseswithmembers class * {
-    @androidx.annotation.Keep <methods>;
-}
-
--keepclasseswithmembers class * {
-    @androidx.annotation.Keep <fields>;
-}
-
--keepclasseswithmembers class * {
-    @androidx.annotation.Keep <init>(...);
-}
-
 -keep class com.android.terminal.TerminalCallbacks { *; }
 -keep class com.android.terminal.Terminal { native <methods>; }
 -keep class com.android.terminal.** { *; }
 -dontwarn com.android.terminal.**
 
--dontwarn androidx.arch.**
--dontwarn androidx.lifecycle.**
--keep class androidx.arch.** { *; }
--keep class androidx.lifecycle.** { *; }
-
 -renamesourcefileattribute SourceFile
--repackageclasses
+-repackageclasses 'a'
 
 -ignorewarnings
 -dontwarn
