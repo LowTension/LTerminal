@@ -36,9 +36,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toolbar;
+
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.PagerTitleStrip;
 import androidx.viewpager.widget.ViewPager;
+
 import com.android.terminal.R;
 
 import static com.android.terminal.Terminal.TAG;
@@ -47,62 +49,35 @@ import static com.android.terminal.Terminal.TAG;
  * Activity that displays all {@link Terminal} instances running in a bound
  * {@link TerminalService}.
  */
-public class TerminalActivity extends Activity
-{
+public class TerminalActivity extends Activity {
 
+    private final View.OnSystemUiVisibilityChangeListener mUiVisibilityChangeListener =
+            new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility) {
+                    if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0) {
+                        getActionBar().hide();
+                    } else {
+                        getActionBar().show();
+                    }
+                }
+            };
     private TerminalService mService;
-
-    private ViewPager mPager;
-    private PagerTitleStrip mTitles;
-
-    private final ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service)
-		{
-            mService = ((TerminalService.ServiceBinder) service).getService();
-
-            final int size = mService.getTerminals().size();
-            Log.d(TAG, "Bound to service with " + size + " active terminals");
-
-            // Give ourselves at least one terminal session
-            if (size == 0)
-			{
-                mService.createTerminal();
-            }
-
-            // Bind UI to known terminals
-            mTermAdapter.notifyDataSetChanged();
-            invalidateOptionsMenu();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name)
-		{
-            mService = null;
-            throw new RuntimeException("Service in same process disconnected?");
-        }
-    };
-
     private final PagerAdapter mTermAdapter = new PagerAdapter() {
         private SparseArray<SparseArray<Parcelable>>
-		mSavedState = new SparseArray<SparseArray<Parcelable>>();
+                mSavedState = new SparseArray<SparseArray<Parcelable>>();
 
         @Override
-        public int getCount()
-		{
-            if (mService != null)
-			{
+        public int getCount() {
+            if (mService != null) {
                 return mService.getTerminals().size();
-            }
-			else
-			{
+            } else {
                 return 0;
             }
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position)
-		{
+        public Object instantiateItem(ViewGroup container, int position) {
             final TerminalView view = new TerminalView(container.getContext());
             view.setId(android.R.id.list);
 
@@ -110,8 +85,7 @@ public class TerminalActivity extends Activity
             view.setTerminal(term);
 
             final SparseArray<Parcelable> state = mSavedState.get(term.key);
-            if (state != null)
-			{
+            if (state != null) {
                 view.restoreHierarchyState(state);
             }
 
@@ -121,14 +95,12 @@ public class TerminalActivity extends Activity
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object)
-		{
+        public void destroyItem(ViewGroup container, int position, Object object) {
             final TerminalView view = (TerminalView) object;
 
             final int key = view.getTerminal().key;
             SparseArray<Parcelable> state = mSavedState.get(key);
-            if (state == null)
-			{
+            if (state == null) {
                 state = new SparseArray<Parcelable>();
                 mSavedState.put(key, state);
             }
@@ -139,84 +111,77 @@ public class TerminalActivity extends Activity
         }
 
         @Override
-        public int getItemPosition(Object object)
-		{
+        public int getItemPosition(Object object) {
             final TerminalView view = (TerminalView) object;
             final int key = view.getTerminal().key;
             final int index = mService.getTerminals().indexOfKey(key);
-            if (index == -1)
-			{
+            if (index == -1) {
                 return POSITION_NONE;
-            }
-			else
-			{
+            } else {
                 return index;
             }
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object)
-		{
+        public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
 
         @Override
-        public CharSequence getPageTitle(int position)
-		{
+        public CharSequence getPageTitle(int position) {
             return mService.getTerminals().valueAt(position).getTitle();
         }
     };
-
-    private final View.OnSystemUiVisibilityChangeListener mUiVisibilityChangeListener =
-	new View.OnSystemUiVisibilityChangeListener() {
+    private final ServiceConnection mServiceConn = new ServiceConnection() {
         @Override
-        public void onSystemUiVisibilityChange(int visibility)
-		{
-            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0)
-			{
-                getActionBar().hide();
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ((TerminalService.ServiceBinder) service).getService();
+
+            final int size = mService.getTerminals().size();
+            Log.d(TAG, "Bound to service with " + size + " active terminals");
+
+            // Give ourselves at least one terminal session
+            if (size == 0) {
+                mService.createTerminal();
             }
-			else
-			{
-                getActionBar().show();
-            }
+
+            // Bind UI to known terminals
+            mTermAdapter.notifyDataSetChanged();
+            invalidateOptionsMenu();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+            throw new RuntimeException("Service in same process disconnected?");
         }
     };
+    private ViewPager mPager;
+    private PagerTitleStrip mTitles;
 
-    public void updatePreferences()
-	{
+    public void updatePreferences() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sp.getBoolean(TerminalSettingsActivity.KEY_FULLSCREEN_MODE, false))
-		{
+        if (sp.getBoolean(TerminalSettingsActivity.KEY_FULLSCREEN_MODE, false)) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
             getActionBar().hide();
-        }
-		else
-		{
+        } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             getActionBar().show();
         }
 
         final String orientation = sp.getString(TerminalSettingsActivity.KEY_SCREEN_ORIENTATION,
-												"automatic");
-        if (orientation.equals("automatic"))
-		{
+                "automatic");
+        if (orientation.equals("automatic")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        }
-		else if (orientation.equals("portrait"))
-		{
+        } else if (orientation.equals("portrait")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-		else if (orientation.equals("landscape"))
-		{
+        } else if (orientation.equals("landscape")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
-        for (int i = 0; i < mPager.getChildCount(); ++i)
-		{
+        for (int i = 0; i < mPager.getChildCount(); ++i) {
             View v = mPager.getChildAt(i);
-            if (v instanceof TerminalView)
-			{
+            if (v instanceof TerminalView) {
                 TerminalView view = (TerminalView) v;
                 view.updatePreferences();
                 view.invalidateViews();
@@ -225,8 +190,7 @@ public class TerminalActivity extends Activity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-	{
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity);
@@ -248,75 +212,67 @@ public class TerminalActivity extends Activity
         final int REQUEST_WRITE_STORAGE = 51;
 
         if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-			!= PackageManager.PERMISSION_GRANTED)
-		{
+                != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-							   REQUEST_WRITE_STORAGE);
+                    REQUEST_WRITE_STORAGE);
         }
     }
 
     @Override
-    protected void onStart()
-	{
+    protected void onStart() {
         super.onStart();
         bindService(new Intent(this, TerminalService.class),
-					mServiceConn, Context.BIND_AUTO_CREATE);
+                mServiceConn, Context.BIND_AUTO_CREATE);
     }
 
     @Override
-    protected void onResume()
-	{
+    protected void onResume() {
         updatePreferences();
         super.onResume();
     }
 
     @Override
-    protected void onStop()
-	{
+    protected void onStop() {
         super.onStop();
         unbindService(mServiceConn);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-	{
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity, menu);
         return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-	{
+    public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.menu_close_tab).setEnabled(mTermAdapter.getCount() > 0);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-	{
-        switch (item.getItemId())
-		{
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.menu_new_tab: {
-					mService.createTerminal();
-					mTermAdapter.notifyDataSetChanged();
-					invalidateOptionsMenu();
-					final int index = mService.getTerminals().size() - 1;
-					mPager.setCurrentItem(index, true);
-					return true;
-				}
+                mService.createTerminal();
+                mTermAdapter.notifyDataSetChanged();
+                invalidateOptionsMenu();
+                final int index = mService.getTerminals().size() - 1;
+                mPager.setCurrentItem(index, true);
+                return true;
+            }
             case R.id.menu_close_tab: {
-					final int index = mPager.getCurrentItem();
-					final int key = mService.getTerminals().keyAt(index);
-					mService.destroyTerminal(key);
-					mTermAdapter.notifyDataSetChanged();
-					invalidateOptionsMenu();
-					return true;
-				}
+                final int index = mPager.getCurrentItem();
+                final int key = mService.getTerminals().keyAt(index);
+                mService.destroyTerminal(key);
+                mTermAdapter.notifyDataSetChanged();
+                invalidateOptionsMenu();
+                return true;
+            }
             case R.id.menu_item_settings: {
-					startActivity(new Intent(TerminalActivity.this, TerminalSettingsActivity.class));
-					return true;
-				}
+                startActivity(new Intent(TerminalActivity.this, TerminalSettingsActivity.class));
+                return true;
+            }
         }
         return false;
     }

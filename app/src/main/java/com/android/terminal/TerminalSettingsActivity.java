@@ -18,22 +18,16 @@ package com.android.terminal;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.util.Log;
 import android.view.MenuItem;
-
-import static com.android.terminal.Terminal.TAG;
 
 import com.android.terminal.R;
 
 /**
  * Settings for Terminal.
  */
-public class TerminalSettingsActivity extends PreferenceActivity
-{
+public class TerminalSettingsActivity extends PreferenceActivity {
 
     public static final String KEY_FULLSCREEN_MODE = "fullscreen_mode";
     public static final String KEY_SCREEN_ORIENTATION = "screen_orientation";
@@ -47,8 +41,7 @@ public class TerminalSettingsActivity extends PreferenceActivity
     private ListPreference mTextColorsPref;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-	{
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
 
@@ -61,10 +54,8 @@ public class TerminalSettingsActivity extends PreferenceActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-	{
-        switch (item.getItemId())
-		{
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;

@@ -7,31 +7,26 @@ import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
 
-public class TerminalKeys
-{
-    private static final String TAG = "TerminalKeys";
-    private static final boolean DEBUG = false;
+public class TerminalKeys {
     // Taken from vterm_input.h
     // TODO: Consider setting these via jni
-    public static final int VTERM_KEY_NONE      = 0;
-    public static final int VTERM_KEY_ENTER     = 1;
-    public static final int VTERM_KEY_TAB       = 2;
+    public static final int VTERM_KEY_NONE = 0;
+    public static final int VTERM_KEY_ENTER = 1;
+    public static final int VTERM_KEY_TAB = 2;
     public static final int VTERM_KEY_BACKSPACE = 3;
-    public static final int VTERM_KEY_ESCAPE    = 4;
-    public static final int VTERM_KEY_UP        = 5;
-    public static final int VTERM_KEY_DOWN      = 6;
-    public static final int VTERM_KEY_LEFT      = 7;
-    public static final int VTERM_KEY_RIGHT     = 8;
-    public static final int VTERM_KEY_INS       = 9;
-    public static final int VTERM_KEY_DEL       = 10;
-    public static final int VTERM_KEY_HOME      = 11;
-    public static final int VTERM_KEY_END       = 12;
-    public static final int VTERM_KEY_PAGEUP    = 13;
-    public static final int VTERM_KEY_PAGEDOWN  = 14;
-
-    public static final int VTERM_KEY_FUNCTION_0   = 256;
+    public static final int VTERM_KEY_ESCAPE = 4;
+    public static final int VTERM_KEY_UP = 5;
+    public static final int VTERM_KEY_DOWN = 6;
+    public static final int VTERM_KEY_LEFT = 7;
+    public static final int VTERM_KEY_RIGHT = 8;
+    public static final int VTERM_KEY_INS = 9;
+    public static final int VTERM_KEY_DEL = 10;
+    public static final int VTERM_KEY_HOME = 11;
+    public static final int VTERM_KEY_END = 12;
+    public static final int VTERM_KEY_PAGEUP = 13;
+    public static final int VTERM_KEY_PAGEDOWN = 14;
+    public static final int VTERM_KEY_FUNCTION_0 = 256;
     public static final int VTERM_KEY_FUNCTION_MAX = VTERM_KEY_FUNCTION_0 + 255;
-
     public static final int VTERM_KEY_KP_0 = 512;
     public static final int VTERM_KEY_KP_1 = 513;
     public static final int VTERM_KEY_KP_2 = 514;
@@ -50,39 +45,33 @@ public class TerminalKeys
     public static final int VTERM_KEY_KP_DIVIDE = 527;
     public static final int VTERM_KEY_KP_ENTER = 528;
     public static final int VTERM_KEY_KP_EQUAL = 529;
-
     public static final int VTERM_MOD_NONE = 0x00;
     public static final int VTERM_MOD_SHIFT = 0x01;
     public static final int VTERM_MOD_ALT = 0x02;
     public static final int VTERM_MOD_CTRL = 0x04;
-
+    private static final String TAG = "TerminalKeys";
+    private static final boolean DEBUG = false;
     private Terminal mTerm;
 
-    public static int getModifiers(KeyEvent event)
-	{
+    public static int getModifiers(KeyEvent event) {
         int mod = 0;
-        if (event.isCtrlPressed())
-		{
+        if (event.isCtrlPressed()) {
             mod |= VTERM_MOD_CTRL;
         }
-        if (event.isAltPressed())
-		{
+        if (event.isAltPressed()) {
             mod |= VTERM_MOD_ALT;
         }
-        if (event.isShiftPressed())
-		{
+        if (event.isShiftPressed()) {
             mod |= VTERM_MOD_SHIFT;
         }
         return mod;
     }
 
-    public static int getKey(Context context, KeyEvent event)
-	{
+    public static int getKey(Context context, KeyEvent event) {
         final boolean volumeAsInput = PreferenceManager.getDefaultSharedPreferences(context)
-			.getBoolean(TerminalSettingsActivity.KEY_VOLUME_MODE, false);
+                .getBoolean(TerminalSettingsActivity.KEY_VOLUME_MODE, false);
 
-        switch (event.getKeyCode())
-		{
+        switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_ENTER:
                 return VTERM_KEY_ENTER;
             case KeyEvent.KEYCODE_TAB:
@@ -120,10 +109,8 @@ public class TerminalKeys
         }
     }
 
-    public static String getKeyName(int key)
-	{
-        switch (key)
-		{
+    public static String getKeyName(int key) {
+        switch (key) {
             case VTERM_KEY_ENTER:
                 return "VTERM_KEY_ENTER";
             case VTERM_KEY_TAB:
@@ -159,54 +146,44 @@ public class TerminalKeys
         }
     }
 
-    public int getCharacter(KeyEvent event)
-	{
+    public int getCharacter(KeyEvent event) {
         int c;
 
-        if (event.isShiftPressed())
-		{
+        if (event.isShiftPressed()) {
             c = event.getUnicodeChar(KeyEvent.META_SHIFT_LEFT_ON | KeyEvent.META_SHIFT_ON);
-        }
-		else
-		{
+        } else {
             c = event.getUnicodeChar(0);
         }
 
         // TODO: Actually support dead keys
-        if ((c & KeyCharacterMap.COMBINING_ACCENT) != 0)
-		{
+        if ((c & KeyCharacterMap.COMBINING_ACCENT) != 0) {
             Log.w(TAG, "Received dead key, ignoring");
             return 0;
         }
         return c;
     }
 
-    public boolean onKey(View v, Context context, int keyCode, KeyEvent event)
-	{
+    public boolean onKey(View v, Context context, int keyCode, KeyEvent event) {
         if (mTerm == null || event.getAction() == KeyEvent.ACTION_UP) return false;
 
         int modifiers = getModifiers(event);
 
         int c = getKey(context, event);
-        if (c != 0)
-		{
-            if (DEBUG)
-			{
+        if (c != 0) {
+            if (DEBUG) {
                 Log.d(TAG, "dispatched key event: " +
-					  "mod=" + modifiers + ", " +
-					  "keys=" + getKeyName(c));
+                        "mod=" + modifiers + ", " +
+                        "keys=" + getKeyName(c));
             }
             return mTerm.dispatchKey(modifiers, c);
         }
 
         c = getCharacter(event);
-        if (c != 0)
-		{
-            if (DEBUG)
-			{
+        if (c != 0) {
+            if (DEBUG) {
                 Log.d(TAG, "dispatched key event: " +
-					  "mod=" + modifiers + ", " +
-					  "character='" + new String(Character.toChars(c)) + "'");
+                        "mod=" + modifiers + ", " +
+                        "character='" + new String(Character.toChars(c)) + "'");
             }
             return mTerm.dispatchCharacter(modifiers, c);
         }
@@ -214,8 +191,7 @@ public class TerminalKeys
         return false;
     }
 
-    public void setTerminal(Terminal term)
-	{
+    public void setTerminal(Terminal term) {
         mTerm = term;
     }
 } 

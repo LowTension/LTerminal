@@ -26,35 +26,22 @@ import android.util.SparseArray;
  * Background service that keeps {@link Terminal} instances running and warm
  * when UI isn't present.
  */
- 
-public class TerminalService extends Service
-{
+
+public class TerminalService extends Service {
     private final SparseArray<Terminal> mTerminals = new SparseArray<Terminal>();
 
-    public class ServiceBinder extends Binder
-	{
-        public TerminalService getService()
-		{
-            return TerminalService.this;
-        }
-    }
-
     @Override
-    public IBinder onBind(Intent intent)
-	{
+    public IBinder onBind(Intent intent) {
         return new ServiceBinder();
     }
 
-    public SparseArray<Terminal> getTerminals()
-	{
+    public SparseArray<Terminal> getTerminals() {
         return mTerminals;
     }
 
-    public int createTerminal()
-	{
+    public int createTerminal() {
         // If our first terminal, start ourselves as long-lived service
-        if (mTerminals.size() == 0)
-		{
+        if (mTerminals.size() == 0) {
             startService(new Intent(this, TerminalService.class));
         }
 
@@ -64,16 +51,20 @@ public class TerminalService extends Service
         return term.key;
     }
 
-    public void destroyTerminal(int key)
-	{
+    public void destroyTerminal(int key) {
         final Terminal term = mTerminals.get(key);
         term.destroy();
         mTerminals.delete(key);
 
         // If our last terminal, tear down long-lived service
-        if (mTerminals.size() == 0)
-		{
+        if (mTerminals.size() == 0) {
             stopService(new Intent(this, TerminalService.class));
+        }
+    }
+
+    public class ServiceBinder extends Binder {
+        public TerminalService getService() {
+            return TerminalService.this;
         }
     }
 }

@@ -16,8 +16,6 @@ package com.android.terminal;
  * limitations under the License.
  */
 
-import static com.android.terminal.Terminal.TAG;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,39 +24,35 @@ import android.view.View;
 
 import com.android.terminal.TerminalView.TerminalMetrics;
 
+import static com.android.terminal.Terminal.TAG;
+
 /**
  * Rendered contents of a single line of a {@link Terminal} session.
  */
-public class TerminalLineView extends View
-{
+public class TerminalLineView extends View {
+    private final Terminal mTerm;
+    private final TerminalMetrics mMetrics;
     public int pos;
     public int row;
     public int cols;
 
-    private final Terminal mTerm;
-    private final TerminalMetrics mMetrics;
-
-    public TerminalLineView(Context context, Terminal term, TerminalMetrics metrics)
-	{
+    public TerminalLineView(Context context, Terminal term, TerminalMetrics metrics) {
         super(context);
         mTerm = term;
         mMetrics = metrics;
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(getDefaultSize(0, widthMeasureSpec),
-							 getDefaultSize(mMetrics.charHeight, heightMeasureSpec));
+                getDefaultSize(mMetrics.charHeight, heightMeasureSpec));
     }
 
     @Override
-    protected void onDraw(Canvas canvas)
-	{
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (mTerm == null)
-		{
+        if (mTerm == null) {
             Log.w(TAG, "onDraw() without a terminal");
             canvas.drawColor(Color.MAGENTA);
             return;
@@ -66,8 +60,7 @@ public class TerminalLineView extends View
 
         final TerminalMetrics m = mMetrics;
 
-        for (int col = 0; col < cols;)
-		{
+        for (int col = 0; col < cols; ) {
             mTerm.getCellRun(row, col, m.run);
 
             m.bgPaint.setColor(m.run.bg);
@@ -88,8 +81,7 @@ public class TerminalLineView extends View
             col += m.run.colSize;
         }
 
-        if (mTerm.getCursorVisible() && mTerm.getCursorRow() == row)
-		{
+        if (mTerm.getCursorVisible() && mTerm.getCursorRow() == row) {
             canvas.save();
             canvas.translate(mTerm.getCursorCol() * m.charWidth, 0);
             canvas.drawRect(0, 0, m.charWidth, m.charHeight, m.cursorPaint);
