@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.terminal">
+	
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.software.leanback"
+        android:required="false" />
+
+    <uses-feature android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <uses-feature android:name="android.hardware.screen.portrait"
+        android:required="false" />
+
+    <application
+		android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_label"
+        android:appCategory="productivity"
+        android:enabled="true">
+        <activity
+            android:name="com.android.terminal.TerminalActivity"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
+            android:theme="@style/TermTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.terminal.TerminalSettingsActivity"
+            android:label="@string/menu_item_settings"
+            android:theme="@style/TermTheme"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+		
+        <service android:name="com.android.terminal.TerminalService" />
+			
+    </application>
+
+</manifest>
